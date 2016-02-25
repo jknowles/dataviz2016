@@ -1,0 +1,254 @@
+
+---
+title: "Untitled"
+author: "Jared E. Knowles"
+date: "February 25, 2016"
+output: 
+  ioslides_presentation:
+    css: custom.css
+    widescreen: TRUE
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(scales)
+```
+
+## Data Visualization
+
+- Data use is increasingly popular in many areas (including education)
+- Policymakers are under increasing pressure to use data to inform decisions, 
+justify funding, and guide practice
+- **But,** policymakers are often **not** statisticians, researchers, or quants
+- **Data visualization** is a way to bridge this gap
+- Proper data visualization will bring the data to the audience in a way they can understand quickly and use to inform decisions
+
+## A Definition
+
+<p><q>Data visualization is a tool for communicating <span class = 'red'>a 
+specific feature</span> of a dataset in an approachable and efficient manner</q></p>
+
+
+## The Challenge
+
+- Data visualization is a communication tool -- like writing
+- Like writing, data visualization is very **audience dependent**
+- Like writing, data visualization has **different purposes**
+- Like writing, data visualization has **varying styles**
+- Like writing, data visualization is **shaped by context and technology**
+
+## Think about writing
+- What are some different ways you use writing in your day to day life?
+
+>- Note taking
+>- Explanation
+>- Sharing
+>- Thinking
+>- Persuading
+
+<p><q>If a picture is worth a thousand words, a good data visualization must 
+always be <span class = 'red'>better than a table.</span></q></p>
+
+
+## Objectives
+
+1. Deconstruct the components of data visualization
+2. Apply this to a complex data visualization
+3. Review data visualization examples
+4. Discuss the role of context
+5. Demonstrate data visualization tools
+
+
+## Deconstructing a graphic
+
+```{r}
+data(tips, package = "reshape2")
+
+ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
+  geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
+                             show.legend = FALSE) + 
+  scale_color_brewer(type = "qual", palette = 2) + 
+  labs(x="Total Bill ($)", y="Tip ($)", 
+       title="Restaurant Tipping Patterns", color = "Meal") + 
+  scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
+  theme_classic()
+
+```
+
+
+## Elements 
+<div class="col2">
+
+- Aesthetics
+- Geometry
+- Guides
+- Scales
+- Labels
+- Layers
+
+
+```{r plot1,out.width="500px",out.height="360px",echo=FALSE}
+ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
+  geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
+                             show.legend = FALSE) + 
+  scale_color_brewer(type = "qual", palette = 2) + 
+  labs(x="Total Bill ($)", y="Tip ($)", 
+       title="Restaurant Tipping Patterns", color = "Meal") + 
+  scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
+  theme_classic()
+```
+</div>
+
+## Aesthetics
+
+Aesthetics are the visual elements we use to encode data onto a plot. Examples 
+include: 
+
+- Location (x and y coordinates)
+- Color and Fill
+- Size and Shape
+- Alpha / transparency
+
+## Experiment with Aesthetics
+
+```{r aesthetics}
+inputPanel(
+  selectInput("x", label = "X axis:",
+      choices = c("total_bill", "tip", "sex", "smoker", 
+                  "day", "time", "size"), selected = "total_bill"),
+  selectInput("y", label = "Y axis:",
+      choices = c("total_bill", "tip", "sex", "smoker", 
+                  "day", "time", "size"), selected = "tip"),
+  selectInput("color", label = "Color:",
+      choices = c("total_bill", "tip", "sex", "smoker", 
+                  "day", "time", "size"), selected = "sex")
+)
+
+renderPlot({
+  ggplot(tips, aes_string(x = input$x, y = input$y, color = input$color)) + 
+  geom_point() +
+  scale_color_brewer(type = "qual", palette = 2) + 
+  labs(title="Restaurant Tipping Patterns") + 
+  theme_classic()
+})
+```
+
+## Geometries
+
+Geometries are visual elements themselves -- objects that are placed on the canvas
+
+- point
+- line
+- polygon
+- boxplot
+- text
+
+When you think of differences in chart types (bar, pie, etc.) you are most often 
+thinking of different ways they arrange geometries. 
+
+## Experiment with Geometries
+
+
+```{r geometries}
+
+shinyApp(
+   ui = fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+  selectInput("x", label = "X axis:",
+      choices = c("total_bill", "tip", "sex", "smoker", 
+                  "day", "time", "size"), selected = "total_bill"),
+  selectInput("y", label = "Y axis:",
+      choices = c("total_bill", "tip", "sex", "smoker", 
+                  "day", "time", "size"), selected = "tip"),
+  selectInput("color", label = "Color:",
+      choices = c("total_bill", "tip", "sex", "smoker", 
+                  "day", "time", "size"), selected = "sex"), 
+  selectInput("geom", label = "Geometry:",
+      choices = c("point", "text", "bar", "line", "smoother",
+                  "boxplot", "contour", "bin", "violin"), selected = "point"), 
+  width = 2), 
+    mainPanel(plotOutput("geomPlot")
+    )
+  )),
+  
+  server = function(input, output) {
+    p1 <- reactive({
+     ggplot(tips, aes_string(x = input$x, y = input$y, 
+                               color = input$color, group = input$color, 
+                               fill = input$color)) + 
+  scale_color_brewer(type = "qual", palette = 2) + 
+  labs(title="Restaurant Tipping Patterns") + 
+  theme_classic()
+  })
+  output$geomPlot <- renderPlot({
+ if(input$geom == "point"){
+   p1() + geom_point()
+ } else if(input$geom == "text"){
+   p1() + geom_text(aes_string(label = input$color))
+ } else if(input$geom == "bar"){
+   p1() + geom_bar(stat = "identity")
+ } else if(input$geom == "line"){
+  p1() + geom_line() 
+ } else if(input$geom == "smoother"){
+   p1() + geom_smooth()
+ } else if(input$geom == "boxplot"){
+   p1() + geom_boxplot()
+ } else if(input$geom == "contour"){
+   p1() + geom_density_2d()
+ } else if(input$geom == "bin"){
+   p1() + geom_bin2d()
+ } else if(input$geom == "violin"){
+   p1() + geom_violin()
+ }}, width=600 , height=500)
+    })
+
+
+```
+
+
+## Guides
+
+A guide is an element that helps the user map visual cues to data points. Legends 
+are the most common type of guide. 
+
+- Axes
+- Reference lines
+- Color bars
+- Annotations
+
+## Scales
+
+Scales are mathematical transformations of the mapping between data elements and 
+aesthetics
+
+- Axis breaks
+- Color mapping to data elements
+- Transformations like log, square root, etc.
+
+## Labels
+
+Labels are additional information that does not directly come from the data 
+that helps the user interpret the graph. 
+
+- Titles
+- Axis labels
+- Legend titles
+- Units labels
+
+## Layers
+
+Layers are how all of these elements are pulled together. A layer consists of 
+data, a mapping of aesthetics to that data, a geometry to place that data on the 
+canvas, and additional parameters to control the scales, labels, and guides. 
+
+
+## R Output
+
+```{r cars}
+summary(cars)
+```
+
+
