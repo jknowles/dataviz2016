@@ -11,7 +11,7 @@
 	font-style: bold;
 	background: rgba(160, 160, 160, 0.5);
 	box-shadow: 0px 0px 2px rgba(0,0,0,0.5);
-}
+  }
 	.reveal blockquote p:first-child,
 	.reveal blockquote p:last-child {
 		display: inline-block;
@@ -37,14 +37,13 @@
 	}
 
   .col2 {
-    columns: 2 200px;         /* number of columns and width in pixels*/
     -webkit-columns: 2 200px; /* chrome, safari */
     -moz-columns: 2 200px;    /* firefox */
+  columns: 2 200px;         /* number of columns and width in pixels*/
   }
   .col3 {
-    columns: 3 100px;
     -webkit-columns: 3 100px;
     -moz-columns: 3 100px;
+    columns: 3 100px;
   }
-  
 </style>
