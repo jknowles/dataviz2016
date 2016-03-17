@@ -372,6 +372,86 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
 ## Context
 
 2. Apply this to a complex data visualization
+
+
+## Leveraging Visualization Skills
+
+1. Using data to visualize and not storytell
+2. Review persuasive techniques
+3. Discuss role of visualization
+4. Closing an argument
+
+## Why focus on persuasion?
+
+- Most data presentations seek to make some sort of an argument
+- Goal is to convince someone to make a decision or to understand a problem 
+that requires their attention
+- The evidence provided is in the form of data
+- But the goal is to spur some action (concern, policy change, attention shift, etc.)
+
+## Why not storytelling?
+
+- Storytelling allows the construction of a compelling narrative, but data, evidence, 
+and facts are not necessary
+- Storytelling invites alternative explanations with no way to equate them
+- Storytelling implies an ending/resolution and does not require the audience to 
+contribute
+- Audiences can choose to ignore, dislike, disregard stories
+
+## How is persuasion different?
+
+An argument has three classic components:
+
+1. A claim
+2. Evidence
+3. A warrant
+
+This can be extended by explicitly anticipating and rebutting counter claims:
+
+4. Acknowledge counterclaim
+5. Offer rebuttal (1-3)
+
+## Types of Claims
+
+- Claims of fact
+- Claims of value
+- Claims of policy
+
+## Types of evidence
+
+- Sufficient and appropriate data
+- Credibility and reputation
+- Appeal to authority
+
+## Logic and causality
+
+- Sequencing
+- Discussion of plausible mediators
+- Rejection of counter-claims
+
+## Policy claims
+
+- Require a mix of both fact and values
+  - "Does this outcome fit with our values as an organization?"
+- Need to directly address trade offs of alternatives, most importantly status 
+quo
+
+## Warrants
+
+Warrants are assumptions that underpin the evidence. This is especially crucial 
+in using data as evidence. 
+
+- Do you have a shared understanding of the meaning of the data elements?
+- Is there shared trust about the validity/accuracy of the measures?
+- Are the definitions embodied in the data meaningful and shared?
+
+The key here is to know your audience.
+
+## 
+
+
+
+
 3. Review data visualization examples
 4. Discuss the role of context
 5. Leveraging Visualization
