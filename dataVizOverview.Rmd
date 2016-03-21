@@ -354,9 +354,6 @@ canvas, and additional parameters to control the scales, labels, and guides.
 - GEOM: Line (x = Total Bill, y = Tip)
 
 
-
-
-
 ```{r plotHalf, out.width="500px",out.height="360px",echo=FALSE}
 ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
   geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
@@ -391,8 +388,8 @@ that requires their attention
 
 ## Why not storytelling?
 
-- Storytelling allows the construction of a compelling narrative, but data, evidence, 
-and facts are not necessary
+- Storytelling allows the construction of a compelling narrative, but data, 
+evidence, and facts are not necessary
 - Storytelling invites alternative explanations with no way to equate them
 - Storytelling implies an ending/resolution and does not require the audience to 
 contribute
