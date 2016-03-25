@@ -245,7 +245,7 @@ shinyApp(
                                fill = "size")) + 
   geom_point() + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns") + 
-  theme_classic()
+  theme_bw()
   })
   output$guidePlot <- renderPlot({
  if(input$guide == "axes"){
@@ -254,7 +254,8 @@ shinyApp(
  } else if(input$guide == "ref. lines"){
    p1() + 
      theme(panel.grid = element_line(color = "gray50", size = 0.5, linetype = 3),
-           panel.grid.major = element_line(), panel.grid.minor = element_line())
+           panel.grid.major = element_line(), panel.grid.minor = element_line()) + 
+     geom_abline(intercept = 0, slope = 0.15, linetype = 2)
  } else if(input$guide == "annotate"){
    p1() + annotate("text", x = 7, y = 7, label = "Annotation") + 
      annotate("text", x = 7, y = 4, label = "Look here!")
@@ -285,7 +286,7 @@ shinyApp(
     sidebarPanel(
   selectInput("scale", label = "Scale:",
       choices = c("normal", "breaks", "color-1", "color-2", "sqrt-trans", 
-                  "log-trans"), 
+                  "log-trans", "percentage"), 
       selected = "normal"), 
   width = 2), 
     mainPanel(plotOutput("scalePlot")
@@ -319,6 +320,15 @@ shinyApp(
    p1() + scale_y_sqrt(label = dollar) + scale_x_sqrt(label = dollar)
  } else if(input$scale == "log-trans"){
    p1() + scale_y_log10(label = dollar) + scale_x_log10(label = dollar)
+ } else if(input$scale == "percentage"){
+   tips$tipPer <- tips$tip / tips$total_bill
+   ggplot(tips, aes_string(x = "total_bill", y = "tipPer", 
+                                color = "size", 
+                                fill = "size")) + 
+  geom_point() + guides(color = "none", fill = "none") +
+  labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
+  scale_y_continuous(label = percent) + scale_x_continuous(label = dollar) +
+  theme_classic()
  }
     }, width=600 , height=500)
     })
@@ -444,11 +454,22 @@ in using data as evidence.
 
 The key here is to know your audience.
 
-## 
+## Animation Example
+
+<p align="center"><img src="https://dl.dropbox.com/u/1811289/TESTstuplot.gif"  style="display: block; margin:0 auto; height:auto; width:auto; max-width:750px; max-height:550px"></p>
 
 
+## Maps
+
+<img src="img/evenFRLmap.gif"  style="display: block; margin:0; height:auto; width:auto; max-width:550px; max-height:600px; margin-left: auto; margin-right: auto;">
 
 
+## Comparing Model Performance
+
+<p align="center"><img src="img/EWSreview.png" style="display: block; margin:0 auto; height:auto; width:auto; max-width:700px; max-height:750px"></p>
+
+
+ 
 3. Review data visualization examples
 4. Discuss the role of context
 5. Leveraging Visualization
