@@ -10,7 +10,18 @@ output:
 runtime: shiny
 ---
 
+<style>
+div#before-column p.forceBreak {
+    break-before: column;
+}
+div#after-column p.forceBreak {
+    break-after: column;
+}
+</style>
+
 ```{r setup, include=FALSE}
+library(shiny)
+library(knitr)
 knitr::opts_chunk$set(echo = FALSE)
 library(ggplot2)
 library(scales)
@@ -58,7 +69,7 @@ always be <span class = 'red'>better than a table.</span></q></p>
 2. Apply this to a complex data visualization
 3. Review data visualization examples
 4. Discuss the role of context
-5. Leveraging Visualization
+5. Using Visualization
 
 
 ## Deconstructing a graphic
@@ -73,13 +84,12 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
   labs(x="Total Bill ($)", y="Tip ($)", 
        title="Restaurant Tipping Patterns", color = "Meal") + 
   scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
-  theme_classic()
+  theme_classic(base_size = 16)
 
 ```
 
 
-## Elements 
-<div class="col2">
+## Elements {.columns-2}
 
 - Aesthetics
 - Geometry
@@ -88,8 +98,7 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
 - Labels
 - Layers
 
-
-```{r plot1,out.width="500px",out.height="360px",echo=FALSE}
+```{r plot1,out.width="450px",out.height="360px",echo=FALSE}
 ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
   geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
                              show.legend = FALSE) + 
@@ -97,9 +106,9 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
   labs(x="Total Bill ($)", y="Tip ($)", 
        title="Restaurant Tipping Patterns", color = "Meal") + 
   scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
-  theme_classic()
+  theme_classic(base_size = 16)
 ```
-</div>
+
 
 ## Aesthetics
 
@@ -131,7 +140,7 @@ renderPlot({
   geom_point() +
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(title="Restaurant Tipping Patterns") + 
-  theme_classic()
+  theme_classic(base_size = 16)
 })
 ```
 
@@ -181,7 +190,7 @@ shinyApp(
                                fill = input$color)) + 
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(title="Restaurant Tipping Patterns") + 
-  theme_classic()
+  theme_classic(base_size = 16)
   })
   output$geomPlot <- renderPlot({
  if(input$geom == "point"){
@@ -245,12 +254,13 @@ shinyApp(
                                fill = "size")) + 
   geom_point() + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns") + 
-  theme_bw()
+  theme_bw(base_size = 16)
   })
   output$guidePlot <- renderPlot({
  if(input$guide == "axes"){
    p1() + theme(axis.line = element_blank(),
-                  axis.text = element_blank(), axis.ticks = element_blank())
+                  axis.text = element_blank(), axis.ticks = element_blank()) + 
+     theme_bw(base_size = 16)
  } else if(input$guide == "ref. lines"){
    p1() + 
      theme(panel.grid = element_line(color = "gray50", size = 0.5, linetype = 3),
@@ -301,7 +311,7 @@ shinyApp(
   geom_point() + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
   scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
-  theme_classic()
+  theme_classic(base_size = 16)
   })
   output$scalePlot <- renderPlot({
  if(input$scale == "breaks"){
@@ -349,13 +359,17 @@ that helps the user interpret the graph.
 
 ## Layers
 
-Layers are how all of these elements are pulled together. A layer consists of 
-data, a mapping of aesthetics to that data, a geometry to place that data on the 
-canvas, and additional parameters to control the scales, labels, and guides. 
+Layers are how all of these elements are pulled together. 
+
+A layer consists of:
+
+  1. data, 
+  2. a mapping of aesthetics to that data, 
+  3. a geometry to place that data on the canvas, 
+  4. and additional parameters to control the scales, labels, and guides. 
 
 
-## Assembling a Graphic
-<div class="col2">
+## Assembling a Graphic {.columns-2}
 
 - SCALE: Y (0 - 10), label dollar, data = Tip
 - SCALE: X (0 - 50), label dollar, data = Total Bill
@@ -372,9 +386,8 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
   labs(x="Total Bill ($)", y="Tip ($)", 
        title="Restaurant Tipping Patterns", color = "Meal") + 
   scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
-  theme_classic()
+  theme_classic(base_size = 16)
 ```
-</div>
 
 ## Context
 
@@ -456,19 +469,19 @@ The key here is to know your audience.
 
 ## Animation Example
 
-<p align="center"><img src="https://dl.dropbox.com/u/1811289/TESTstuplot.gif"  style="display: block; margin:0 auto; height:auto; width:auto; max-width:750px; max-height:550px"></p>
+<p align="center"><img src="https://dl.dropbox.com/u/1811289/TESTstuplot.gif"  style="display: block; margin-top:-25px; auto; height:auto; width:auto; max-width:750px; max-height:550px"></p>
 
 
 ## Maps
 
-<img src="img/evenFRLmap.gif"  style="display: block; margin:0; height:auto; width:auto; max-width:550px; max-height:600px; margin-left: auto; margin-right: auto;">
+<img src="img/evenFRLmap.gif"  style="display: block; margin-top:-50px; height:auto; width:auto; max-width:550px; max-height:600px; margin-left: auto; margin-right: auto;">
 
 
 ## Comparing Model Performance
 
 <p align="center"><img src="img/EWSreview.png" style="display: block; margin:0 auto; height:auto; width:auto; max-width:700px; max-height:750px"></p>
 
-
+## More stuff
  
 3. Review data visualization examples
 4. Discuss the role of context

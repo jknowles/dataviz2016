@@ -1,6 +1,5 @@
-<style type="text/css">
-  .reveal h1 { font-size: 1.8em; }
-  .reveal blockquote {
+.reveal h1 { font-size: 1.8em; }
+.reveal blockquote {
   display: block;
 	position: relative;
 	width: 70%;
@@ -22,7 +21,6 @@
 	li{
 	  color: black;
 	}
-	
 	h1{
 	  color: black;
 	}
@@ -35,15 +33,3 @@
 	hgroup{
 	  color: black;
 	}
-
-  .col2 {
-    -webkit-columns: 2 200px; /* chrome, safari */
-    -moz-columns: 2 200px;    /* firefox */
-  columns: 2 200px;         /* number of columns and width in pixels*/
-  }
-  .col3 {
-    -webkit-columns: 3 100px;
-    -moz-columns: 3 100px;
-    columns: 3 100px;
-  }
-</style>
