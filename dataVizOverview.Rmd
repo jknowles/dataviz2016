@@ -7,6 +7,7 @@ output:
   ioslides_presentation:
     css: custom.css
     widescreen: TRUE
+    smart: TRUE
 runtime: shiny
 ---
 
@@ -89,7 +90,11 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
 ```
 
 
-## Elements {.columns-2}
+## Elements 
+
+We can understand visualizations using Wilkinson's Grammar of Graphics. 
+
+Components: 
 
 - Aesthetics
 - Geometry
@@ -97,17 +102,6 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
 - Scales
 - Labels
 - Layers
-
-```{r plot1,out.width="450px",out.height="360px",echo=FALSE}
-ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
-  geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
-                             show.legend = FALSE) + 
-  scale_color_brewer(type = "qual", palette = 2) + 
-  labs(x="Total Bill ($)", y="Tip ($)", 
-       title="Restaurant Tipping Patterns", color = "Meal") + 
-  scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
-  theme_classic(base_size = 16)
-```
 
 
 ## Aesthetics
@@ -507,7 +501,7 @@ Which tells a better story?
 plotdf <- data.frame(y = runif(26), x = LETTERS)
 
 ggplot(plotdf, aes(x = x, y = y)) + geom_bar(stat = 'identity') + 
-  scale_y_continuous(label = percent) + theme_classic(base_size = 16)
+  scale_y_continuous(label = percent) + theme_classic(base_size = 14)
 
 ```
 
@@ -515,7 +509,7 @@ ggplot(plotdf, aes(x = x, y = y)) + geom_bar(stat = 'identity') +
 
 ```{r, fig.align = 'center'}
 ggplot(plotdf, aes(x = reorder(x, y), y = y)) + geom_bar(stat = 'identity') + 
-  scale_y_continuous(label = percent) + theme_classic(base_size = 16)
+  scale_y_continuous(label = percent) + theme_classic(base_size = 14)
 
 ```
 
@@ -524,7 +518,7 @@ ggplot(plotdf, aes(x = reorder(x, y), y = y)) + geom_bar(stat = 'identity') +
 
 ```{r, fig.align = 'center'}
 ggplot(plotdf, aes(x = reorder(x, y), y = y)) + geom_bar(stat = 'identity') + 
-  scale_y_continuous(label = percent) + theme_classic(base_size = 16) + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 14) + 
   geom_hline(yintercept = 0.7) + 
   annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark")
 
@@ -537,10 +531,11 @@ ggplot(plotdf, aes(x = reorder(x, y), y = y)) + geom_bar(stat = 'identity') +
 plotdf$col <- ifelse(plotdf$y >= 0.7, "Meet", "Miss")
 
 ggplot(plotdf, aes(x = reorder(x, y), y = y, fill = col)) + geom_bar(stat = 'identity') + 
-  scale_y_continuous(label = percent) + theme_classic(base_size = 16) + 
-  scale_fill_brewer(type = "qual", palette = 2) + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 14) + 
+  scale_fill_brewer("Benchmark", type = "qual", palette = 2) + 
   geom_hline(yintercept = 0.7) + 
-  annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark")
+  annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark") +
+  theme(legend.position = c(0.15, 0.55))
 
 ```
 
@@ -549,12 +544,13 @@ ggplot(plotdf, aes(x = reorder(x, y), y = y, fill = col)) + geom_bar(stat = 'ide
 
 ```{r, fig.align = 'center'}
 ggplot(plotdf, aes(x = reorder(x, y), y = y, fill = col)) + geom_bar(stat = 'identity') + 
-  scale_y_continuous(label = percent) + theme_classic(base_size = 16) + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 14) + 
   scale_fill_brewer("Benchmark", type = "qual", palette = 2) + 
   geom_hline(yintercept = 0.7) + 
-  geom_text(label = paste0(round(plotdf$y*100, 0), "%"), size = 4, vjust = -1) +
+  geom_text(label = paste0(round(plotdf$y*100, 0), "%"), size = 3.5, vjust = -1) +
   annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark") + 
-  coord_cartesian(ylim = c(0, 1), expand = FALSE)
+  coord_cartesian(ylim = c(0, 1), expand = FALSE) +
+  theme(legend.position = c(0.15, 0.55))
 
 ```
 
@@ -577,7 +573,7 @@ ggplot(plotdf, aes(x = x1, y = y, color = outlier, shape = outlier)) +
   theme_bw() + scale_color_brewer(type = "qual", palette = 6) + 
   geom_smooth(aes(group = 1)) + 
   annotate("rect", xmin = 0.05, xmax = 0.25,  ymin = 3, ymax = 4.5, alpha = .2) +
-  annotate("rect", xmin = 0.85, xmax = 1,  ymin = 0, ymax = 1, alpha = .2) 
+  annotate("rect", xmin = 0.85, xmax = 1,  ymin = 0, ymax = 1, alpha = .2)
 
 
 ```
@@ -585,20 +581,20 @@ ggplot(plotdf, aes(x = x1, y = y, color = outlier, shape = outlier)) +
 
 ## Use only these color schemes (divergent)
 
-```{r, echo = FALSE, fig.align='center', fig.height=10, fig.width=16, fig.retina=TRUE}
+```{r, echo = FALSE, fig.align='center'}
 library(RColorBrewer)
 display.brewer.all(type = 'div')
 ```
 
 ## Use only these color schemes (qualitative)
 
-```{r, echo = FALSE, fig.align='center', fig.height=10, fig.width=16, fig.retina=TRUE}
+```{r, echo = FALSE, fig.align='center'}
 display.brewer.all(type = 'qual')
 ```
 
 ## Use only these color schemes (sequential)
 
-```{r, echo = FALSE, fig.align='center', fig.height=10, fig.width=16, fig.retina=TRUE}
+```{r, echo = FALSE, fig.align='center'}
 display.brewer.all(type = 'seq')
 ```
 

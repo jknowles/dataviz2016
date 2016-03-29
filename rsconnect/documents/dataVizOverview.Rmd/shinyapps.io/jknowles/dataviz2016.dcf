@@ -2,8 +2,8 @@ name: dataviz2016
 account: jknowles
 server: shinyapps.io
 appId: 90968
-bundleId: 405271
+bundleId: 405573
 url: https://jknowles.shinyapps.io/dataviz2016/
-when: 1459220129.28941
+when: 1459259205.61457
 asMultiple: FALSE
 asStatic: FALSE
