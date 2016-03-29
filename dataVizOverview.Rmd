@@ -22,7 +22,7 @@ div#after-column p.forceBreak {
 ```{r setup, include=FALSE}
 library(shiny)
 library(knitr)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center")
 library(ggplot2)
 library(scales)
 ```
@@ -389,10 +389,6 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
   theme_classic(base_size = 16)
 ```
 
-## Context
-
-2. Apply this to a complex data visualization
-
 
 ## Leveraging Visualization Skills
 
@@ -467,10 +463,148 @@ in using data as evidence.
 
 The key here is to know your audience.
 
-## Animation Example
 
-<p align="center"><img src="https://dl.dropbox.com/u/1811289/TESTstuplot.gif"  style="display: block; margin-top:-25px; auto; height:auto; width:auto; max-width:750px; max-height:550px"></p>
+## Why Opinions Change (Pandey et al, 2014)
 
+1. *Struck by evidence*
+2. Evidence strengthens existing views
+3. *Boomerang* -- when your argument is weak
+
+## Why Opinions Don't Change (Pandey et al, 2014)
+
+1. Sketpical of Data
+2. Skeptical of Logic
+3. Core Beliefs
+4. Complexity
+
+
+## Persuasion
+
+1. Ethos
+2. Pathos
+3. Visualization
+
+## Lessons Learned
+
+1. Ethos: Build trust in the data.
+2. Ethos: Build trust in the framing.
+3. Pathos: Be mindful of values and address core shared values.
+4. Visualization: Clarity and drama
+
+### Empower Your Audience to Take Action
+
+## Colors, Order, and Presentation
+
+The way to achieve this goal is by using every visual element to your advantage. 
+Colors, shapes (geometries), scales, and labels should all be harnessed in 
+service of your message.
+
+## Order
+
+Which tells a better story?
+
+```{r, fig.align = 'center'}
+plotdf <- data.frame(y = runif(26), x = LETTERS)
+
+ggplot(plotdf, aes(x = x, y = y)) + geom_bar(stat = 'identity') + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 16)
+
+```
+
+## Order 
+
+```{r, fig.align = 'center'}
+ggplot(plotdf, aes(x = reorder(x, y), y = y)) + geom_bar(stat = 'identity') + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 16)
+
+```
+
+## Annotation and Scale
+
+
+```{r, fig.align = 'center'}
+ggplot(plotdf, aes(x = reorder(x, y), y = y)) + geom_bar(stat = 'identity') + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 16) + 
+  geom_hline(yintercept = 0.7) + 
+  annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark")
+
+```
+
+
+## Why make it hard?
+
+```{r, fig.align = 'center'}
+plotdf$col <- ifelse(plotdf$y >= 0.7, "Meet", "Miss")
+
+ggplot(plotdf, aes(x = reorder(x, y), y = y, fill = col)) + geom_bar(stat = 'identity') + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 16) + 
+  scale_fill_brewer(type = "qual", palette = 2) + 
+  geom_hline(yintercept = 0.7) + 
+  annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark")
+
+```
+
+
+## Invite exploration
+
+```{r, fig.align = 'center'}
+ggplot(plotdf, aes(x = reorder(x, y), y = y, fill = col)) + geom_bar(stat = 'identity') + 
+  scale_y_continuous(label = percent) + theme_classic(base_size = 16) + 
+  scale_fill_brewer("Benchmark", type = "qual", palette = 2) + 
+  geom_hline(yintercept = 0.7) + 
+  geom_text(label = paste0(round(plotdf$y*100, 0), "%"), size = 4, vjust = -1) +
+  annotate(geom = "text", x = 5, y = 0.75, label = "Performance benchmark") + 
+  coord_cartesian(ylim = c(0, 1), expand = FALSE)
+
+```
+
+## Make drama clear
+
+```{r}
+set.seed(1245)
+plotdf <- data.frame(x1 = runif(100), x2 = runif(100), x3 = runif(100), epsilon = runif(100))
+plotdf$y <- 1 + 2*plotdf$x1 + -1*plotdf$x2 + 1.2*plotdf$x3^2 + plotdf$epsilon
+
+tmp <- data.frame(x1 = c(0.2, 0.1, 0.9), x2 = c(0, 0, 0), x3 = c(0, 0, 0), 
+                  epsilon = c(2.9, 1.89, -2.25))
+tmp$y <- 1 + 2*tmp$x1 + -1*tmp$x2 + 3*tmp$x3^2 + tmp$epsilon
+plotdf <- rbind(plotdf, tmp)
+plotdf$outlier <- c(rep("No", 100), rep("Yes", 3))
+
+
+ggplot(plotdf, aes(x = x1, y = y, color = outlier, shape = outlier)) + 
+  geom_point() +  
+  theme_bw() + scale_color_brewer(type = "qual", palette = 6) + 
+  geom_smooth(aes(group = 1)) + 
+  annotate("rect", xmin = 0.05, xmax = 0.25,  ymin = 3, ymax = 4.5, alpha = .2) +
+  annotate("rect", xmin = 0.85, xmax = 1,  ymin = 0, ymax = 1, alpha = .2) 
+
+
+```
+
+
+## Use only these color schemes (divergent)
+
+```{r, echo = FALSE, fig.align='center', fig.height=10, fig.width=16, fig.retina=TRUE}
+library(RColorBrewer)
+display.brewer.all(type = 'div')
+```
+
+## Use only these color schemes (qualitative)
+
+```{r, echo = FALSE, fig.align='center', fig.height=10, fig.width=16, fig.retina=TRUE}
+display.brewer.all(type = 'qual')
+```
+
+## Use only these color schemes (sequential)
+
+```{r, echo = FALSE, fig.align='center', fig.height=10, fig.width=16, fig.retina=TRUE}
+display.brewer.all(type = 'seq')
+```
+
+## More complex graphics
+
+We use the same principles, but in layers, and to invite more engagement.
 
 ## Maps
 
@@ -481,9 +615,143 @@ The key here is to know your audience.
 
 <p align="center"><img src="img/EWSreview.png" style="display: block; margin:0 auto; height:auto; width:auto; max-width:700px; max-height:750px"></p>
 
+## Animation Example
+
+<p align="center"><img src="https://dl.dropbox.com/u/1811289/TESTstuplot.gif"  style="display: block; margin-top:-25px; auto; height:auto; width:auto; max-width:750px; max-height:550px"></p>
+
+## Why does this work?
+
+- Annotation
+- Labeling
+- Lots of data-ink
+- Reference points galore
+
+## Some tips
+
+- Have a properly chosen format and design 
+- Use words, numbers and drawing together
+- Reflect a balance, a proportion, relevant scale
+- Display an accessible complexity of details
+- Have a narrative quality, tell a story
+- Avoid content-free decoration (Tufte's proverbial chartjunk)
+- Draw in a professional manner with an eye on the technical details
+- Provide your audience with the context they need and remember they haven't 
+lived in the data like you!
+
+## Themes
+
+```{r plot2, echo=FALSE}
+library(gridExtra)
+library(ggthemes)
+p1 <- qplot(hp, mpg, data=mtcars) + theme_economist()
+p2 <- qplot(hp, mpg, data=mtcars) +  theme_tufte()
+p3 <- qplot(hp, mpg, data=mtcars, color=factor(cyl)) + 
+  theme_excel() + scale_color_excel()
+p4 <- qplot(hp,mpg,data=mtcars,color=factor(cyl)) + theme_stata()
+
+grid.arrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
+```
+
+## Technical Details 
+
+<p><q>Don't forget them.</q></p>
+
+## Graphics Files {.columns-2}
+
+### Raster
+
+- Files like **jpg** , **png** , **gif**. 
+- Fixed scale, aspect ratio, and size
+- Reasonable file size
+- Viewable in almost any image viewing and editing system, including any modern web browser, PowerPoint, etc.
+
+### Vector
+
+- Files like **pdf** and **svg**
+- Infinitely zoomable, adjustable on the fly
+- Larger file size
+- Viewable and usable in fewer systems. SVGs can be used in modern web browsers. PDFs included in other PDF reports. 
+
+## Programming vs. Illustrating
+
+Keep in mind that depending on the project you may need to programatically make 
+data visualizations, or you may need a highly customized illustrated graphic. 
+
+## Technologies
+
+The technology you choose to do visualizations is largely a question of personal productivity, but with some important caveats:
+
+- In the future, more and more content is going to be delivered in a paperless world, so pick a technology that can leverage web/tablet/phone interfaces
+- Different technologies are useful for different levels of finish and polish; Adobe Illustrator is great for publication quality graphics, R is a great tool for rapidly prototyping different visualizations
+- Chose a technology that best serves your **consumer**, not you the producer. Charts are a service to the consumer, not to the creator. 
+
+## Some Opinions on Technologies
+
+```{r technologies,echo=FALSE}
+techs<-c("Adobe", "R", "Stata/SPSS", "D3", "Tableau", "JavaScript", 
+         "Processing", "Excel", "SAS")
+speed  <- c(1.5, 7, 5, 6, 9, 4, 5, 9, 4)
+quality <- c(10, 9, 5, 9, 8, 8, 9, 2, 4)
+web <- c("Yes", "Yes", "No", "Yes", "No", "Yes", "Yes", "No", "No")
+viz <- data.frame(techs=techs, speed=speed, quality=quality, web=web)
+
+qplot(speed, quality, data=viz, geom="point", color=factor(web), size = I(4)) + 
+  coord_cartesian(x = c(0,11), y = c(0,11)) + theme_bw() +
+  geom_text(aes(label = techs), color="black", vjust=1.4, hjust=1, size = I(4)) +
+  theme(axis.text=element_blank(), axis.ticks=element_blank(), 
+        legend.position = c(0.185, 0.1), legend.direction ="horizontal") +
+  labs(color="Web Ready") + 
+  scale_color_few() +
+  labs(x = "Speed", y = "Quality") 
+```
+
+
+## Beyond Graphics
+
+We have a number of other techniques we can use beyond simple charts. 
+
+- Animations
+- Interactive demos
+- Summary tables
+- Videos
+- Web sites
+- Simulations
+
+## References
+
+- Tufte, Edward. 1992. [The Visual Display of Quantitative Information.](http://www.amazon.com/The-Visual-Display-Quantitative-Information/dp/0961392142/) Graphics Press. 
+- Unwin, Theus, and Hofmann. 2006. [Graphics of Large Datasets: Visualizing a Million.](http://www.amazon.com/Graphics-Large-Datasets-Visualizing-Statistics/dp/0387329064) Springer. 
+- Wilkinson, Leland. 2005. The Grammar of Graphics. Springer.
+- Ware, Colin. 2012. [Information Visualization: Perception for Design.](http://www.amazon.com/Information-Visualization-Third-Edition-Technologies/dp/0123814642/ref=reg_hu-rd_add_1_dp) 3rd Edition. Morgan Kaufmann. 
+- Cleveland, William. 1994. [The Elements of Graphing Data.](http://www.amazon.com/gp/product/0963488414/) Hobart Press. 
+- Cleveland, William. 1993. [Visualizing Data.](http://www.amazon.com/gp/product/0963488406) Hobart Press.
+
+## References (cont'd)
+
+- Few, Stephen. 2009. [Now You See It: Simple Visualization Techniques for Quantiative Analysis.](http://www.amazon.com/gp/product/0970601980/) Analytics Press. 
+- Few, Stephen. 2012. [Show Me the Numbers: Designing Tables and Graphs to Enlighten.](http://www.amazon.com/gp/product/0970601972) Analytics Press. 
+- Yau, Nathan. 2011. [Visualize This: The FlowingData Guide to Design, Visualization, and Statistics.](http://www.amazon.com/Visualize-This-FlowingData-Visualization-Statistics/dp/0470944889/) Wiley.
+- Few, Stephen. 2006. [Information Dashboard Design: The Effective Visual Communication of Data.](http://www.amazon.com/Information-Dashboard-Design-Effective-Communication/dp/0596100167) O'Reilly Media
+
+## Where to Learn Online?
+
+- [Andy Kirk](http://www.visualisingdata.com)
+- [D3](http://d3js.org/)
+- [The Functional Art](http://www.thefunctionalart.com/)
+- [ggplot2](http://www.ggplot2.org)
+- [Robert Kosara](http://eagereyes.org/about)
+- [Data Stories Podcast](http://datastori.es/)
+- [Rad Presenters Podcast](http://www.radpresenters.com/)
+
+## Contact Information
+
+- E-mail: jared.knowles@dpi.wi.gov / jknowles@gmail.com
+- GitHub: [http://www.github.com/jknowles](http://www.github.com/jknowles)
+- Homepage: [www.jaredknowles.com](http://www.jaredknowles.com/)
+- Google+: [https://plus.google.com/+JaredKnowles](https://plus.google.com/+JaredKnowles)
+
 ## More stuff
  
 3. Review data visualization examples
 4. Discuss the role of context
 5. Leveraging Visualization
-
