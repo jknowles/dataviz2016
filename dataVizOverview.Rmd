@@ -26,6 +26,8 @@ library(knitr)
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align = "center")
 library(ggplot2)
 library(scales)
+data(tips, package = "reshape2")
+tips$day <- relevel(tips$day, ref = "Thur")
 ```
 
 ## Data Visualization
@@ -76,7 +78,7 @@ always be <span class = 'red'>better than a table.</span></q></p>
 ## Deconstructing a graphic
 
 ```{r}
-data(tips, package = "reshape2")
+
 
 ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
   geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
@@ -383,6 +385,38 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
   theme_classic(base_size = 16)
 ```
 
+## Dimensionality
+
+- Using this "grammar" we can begin to compose arguments
+- Key to doing this is to think about the dimensionality of the data and 
+the complexity of the visualization
+- Dimensions limit how many data elements we can encode into one graphic
+- More dimensions = more data, but does not necessarily = more understanding
+- Aesthetics are one method of encoding data, layers and facets are another
+- Sometimes we may assign the same data element to multiple dimensions for 
+emphasis
+
+## The third dimension
+
+- Instead of thinking about a 3d plot, consider faceting
+- Facets are a technique for repeating plot elements across multiple 
+types of data
+
+```{r facet}
+library(gridExtra)
+
+p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day)) + geom_point() + 
+  theme_bw() + theme(legend.position = c(.15, .75))
+
+
+p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
+  facet_wrap(~day) + theme_bw() 
+
+grid.arrange(p1, p2)
+
+
+```
+
 
 ## Leveraging Visualization Skills
 
@@ -578,6 +612,58 @@ ggplot(plotdf, aes(x = x1, y = y, color = outlier, shape = outlier)) +
 
 ```
 
+## Color scheme application
+
+```{r colorapp}
+# inputPanel(
+#   selectInput("type", label = "Palette Type",
+#       choices = c("qual", "div", "seq"), selected = "qual"),
+#   selectInput("pal", label = "Palette Selection",
+#       choices = c(1:9), selected = 1)
+# )
+# 
+# renderPlot({
+#   ggplot(tips, aes(x = total_bill, y = tip, color = day)) + 
+#   geom_point() +
+#   scale_color_brewer(type = input$type, palette = input$pal) + 
+#   labs(title="Restaurant Tipping Patterns") + 
+#   theme_classic(base_size = 16)
+# })
+
+shinyApp(
+   ui = fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+ selectInput("type", label = "Palette Type",
+      choices = c("qual", "div", "seq"), selected = "qual"),
+  selectInput("pal", label = "Palette Selection",
+      choices = c(1:9), selected = 1)),
+    mainPanel(plotOutput("scalePlot"))
+  )),
+  server = function(input, output) {
+  # p1 <- ggplot(tips, aes(x = total_bill, y = tip, color = day)) + 
+  # geom_point() +
+  # labs(title="Restaurant Tipping Patterns") + 
+  # theme_classic(base_size = 16)
+  # colPal <- reactive({
+  # scale_color_brewer(type = input$type, palette = input$pal)
+  #   })
+  output$scalePlot <- renderPlot(
+  {ggplot(tips, aes(x = total_bill, y = tip, color = day), environment = environment()) + 
+  geom_point() +   labs(title="Restaurant Tipping Patterns") + 
+  theme_classic(base_size = 16) +  
+    scale_color_brewer(type = input$type, palette = input$pal)}
+  , width=600 , height=500)
+  
+  
+  #   
+  # output$scalePlot <- renderPlot({+ 
+  #     scale_color_brewer(type = input$type, palette = input$pal)}, 
+  #                                width=600 , height=500)
+  })
+
+
+```
 
 ## Use only these color schemes (divergent)
 
@@ -701,17 +787,6 @@ qplot(speed, quality, data=viz, geom="point", color=factor(web), size = I(4)) +
   labs(x = "Speed", y = "Quality") 
 ```
 
-
-## Beyond Graphics
-
-We have a number of other techniques we can use beyond simple charts. 
-
-- Animations
-- Interactive demos
-- Summary tables
-- Videos
-- Web sites
-- Simulations
 
 ## References
 
