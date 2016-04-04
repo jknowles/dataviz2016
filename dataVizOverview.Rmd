@@ -396,25 +396,36 @@ the complexity of the visualization
 - Sometimes we may assign the same data element to multiple dimensions for 
 emphasis
 
-## The third dimension
+## Interpretable Dimensions
 
-- Instead of thinking about a 3d plot, consider faceting
-- Facets are a technique for repeating plot elements across multiple 
-types of data
 
-```{r facet}
+```{r facet, out.width='850px'}
 library(gridExtra)
 
 p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day)) + geom_point() + 
-  theme_bw() + theme(legend.position = c(.15, .75))
+  theme_bw() + 
+  theme(legend.position = c(.42, .85), legend.direction = "horizontal")
 
 
 p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
   facet_wrap(~day) + theme_bw() 
 
-grid.arrange(p1, p2)
+grid.arrange(p1, p2, ncol = 2)
+
+```
+
+## Gridding
 
 
+```{r facetgrid, out.width='850px'}
+p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day, shape = time)) +
+  geom_point() + theme_bw() + theme(legend.position = c(.41, .85), 
+                                    legend.direction = "horizontal")
+
+p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
+  facet_grid(day~time) + theme_bw() + 
+  geom_smooth(method = 'lm', se = FALSE, linetype = 2)
+grid.arrange(p1, p2, ncol = 2)
 ```
 
 
@@ -612,56 +623,23 @@ ggplot(plotdf, aes(x = x1, y = y, color = outlier, shape = outlier)) +
 
 ```
 
-## Color scheme application
+## Using colors
 
 ```{r colorapp}
-# inputPanel(
-#   selectInput("type", label = "Palette Type",
-#       choices = c("qual", "div", "seq"), selected = "qual"),
-#   selectInput("pal", label = "Palette Selection",
-#       choices = c(1:9), selected = 1)
-# )
-# 
-# renderPlot({
-#   ggplot(tips, aes(x = total_bill, y = tip, color = day)) + 
-#   geom_point() +
-#   scale_color_brewer(type = input$type, palette = input$pal) + 
-#   labs(title="Restaurant Tipping Patterns") + 
-#   theme_classic(base_size = 16)
-# })
-
-shinyApp(
-   ui = fluidPage(
-  sidebarLayout(
-    sidebarPanel(
- selectInput("type", label = "Palette Type",
-      choices = c("qual", "div", "seq"), selected = "qual"),
-  selectInput("pal", label = "Palette Selection",
-      choices = c(1:9), selected = 1)),
-    mainPanel(plotOutput("scalePlot"))
-  )),
-  server = function(input, output) {
-  # p1 <- ggplot(tips, aes(x = total_bill, y = tip, color = day)) + 
-  # geom_point() +
-  # labs(title="Restaurant Tipping Patterns") + 
-  # theme_classic(base_size = 16)
-  # colPal <- reactive({
-  # scale_color_brewer(type = input$type, palette = input$pal)
-  #   })
-  output$scalePlot <- renderPlot(
-  {ggplot(tips, aes(x = total_bill, y = tip, color = day), environment = environment()) + 
-  geom_point() +   labs(title="Restaurant Tipping Patterns") + 
-  theme_classic(base_size = 16) +  
-    scale_color_brewer(type = input$type, palette = input$pal)}
-  , width=600 , height=500)
-  
-  
-  #   
-  # output$scalePlot <- renderPlot({+ 
-  #     scale_color_brewer(type = input$type, palette = input$pal)}, 
-  #                                width=600 , height=500)
-  })
-
+ inputPanel(
+   selectInput("type", label = "Palette Type",
+     choices = c("qual", "div", "seq"), selected = "qual"),
+    numericInput("pal", label = "Palette Selection", 1,
+      min = 1, max = 9, step = 1)
+   )
+ renderPlot({
+   ggplot(tips, aes(x = total_bill, y = tip, color = day)) +
+   geom_point() + geom_smooth(method = "lm", se = FALSE, linetype = 2) +
+   labs(title="Restaurant Tipping Patterns") +
+   theme_bw(base_size = 16) + labs(x = "Total Bill", y = "Tip") + 
+       scale_x_continuous(label = dollar) + scale_y_continuous(label = dollar) + 
+        scale_color_brewer(type = input$type, palette = input$pal)
+})
 
 ```
 
@@ -820,9 +798,3 @@ qplot(speed, quality, data=viz, geom="point", color=factor(web), size = I(4)) +
 - GitHub: [http://www.github.com/jknowles](http://www.github.com/jknowles)
 - Homepage: [www.jaredknowles.com](http://www.jaredknowles.com/)
 - Google+: [https://plus.google.com/+JaredKnowles](https://plus.google.com/+JaredKnowles)
-
-## More stuff
- 
-3. Review data visualization examples
-4. Discuss the role of context
-5. Leveraging Visualization
