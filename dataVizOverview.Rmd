@@ -47,20 +47,20 @@ specific feature</span> of a dataset in an approachable and efficient manner</q>
 
 ## The Challenge
 
-- Data visualization is a communication tool -- like writing
-- Like writing, data visualization is very **audience dependent**
-- Like writing, data visualization has **different purposes**
-- Like writing, data visualization has **varying styles**
-- Like writing, data visualization is **shaped by context and technology**
+> - Data visualization is a communication tool -- like writing
+> - Like writing, data visualization is very **audience dependent**
+> - Like writing, data visualization has **different purposes**
+> - Like writing, data visualization has **varying styles**
+> - Like writing, data visualization is **shaped by context and technology**
 
 ## Think about writing
 - What are some different ways you use writing in your day to day life?
 
->- Note taking
->- Explanation
->- Sharing
->- Thinking
->- Persuading
+- Note taking
+- Explanation
+- Sharing
+- Thinking
+- Persuading
 
 <p><q>If a picture is worth a thousand words, a good data visualization must 
 always be <span class = 'red'>better than a table.</span></q></p>
@@ -72,7 +72,7 @@ always be <span class = 'red'>better than a table.</span></q></p>
 2. Apply this to a complex data visualization
 3. Review data visualization examples
 4. Discuss the role of context
-5. Using Visualization
+5. Q&A and Practice
 
 
 ## Deconstructing a graphic
@@ -116,6 +116,9 @@ include:
 - Size and Shape
 - Alpha / transparency
 
+Deciding what visual cue to use for which data element is referred to as 
+"mapping" an aesthetic.
+
 ## Experiment with Aesthetics
 
 ```{r aesthetics}
@@ -136,7 +139,7 @@ renderPlot({
   geom_point() +
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(title="Restaurant Tipping Patterns") + 
-  theme_classic(base_size = 16)
+  theme_bw(base_size = 16)
 })
 ```
 
@@ -186,7 +189,7 @@ shinyApp(
                                fill = input$color)) + 
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(title="Restaurant Tipping Patterns") + 
-  theme_classic(base_size = 16)
+  theme_bw(base_size = 16)
   })
   output$geomPlot <- renderPlot({
  if(input$geom == "point"){
@@ -307,7 +310,7 @@ shinyApp(
   geom_point() + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
   scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
-  theme_classic(base_size = 16)
+  theme_bw(base_size = 16)
   })
   output$scalePlot <- renderPlot({
  if(input$scale == "breaks"){
@@ -334,7 +337,7 @@ shinyApp(
   geom_point() + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
   scale_y_continuous(label = percent) + scale_x_continuous(label = dollar) +
-  theme_classic()
+  theme_bw(base_size = 16)
  }
     }, width=600 , height=500)
     })
@@ -352,6 +355,55 @@ that helps the user interpret the graph.
 - Axis labels
 - Legend titles
 - Units labels
+- Annotations and references
+
+## Label Directly when Possible
+
+```{r labeldirect}
+p1 <- ggplot(tips, aes_string(x = "total_bill", y = "tip", 
+                                color = "day", 
+                                fill = "day")) + 
+  geom_smooth(se=FALSE, fullrange=TRUE) + 
+  guides(color = "none", fill = "none") +
+  annotate(geom = 'text', x = 46, y = 4, label = "Sun.") +
+  annotate(geom = 'text', x = 45, y = 7, label = "Sat.") +
+  annotate(geom = 'text', x = 44.15, y = 5.25, label = "Thur.") +
+  annotate(geom = 'text', x = 41, y = 4.8, label = "Fri.") +
+  labs(title="Direct", x= "Total Bill", y = "Tip") +
+  scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
+  theme_bw(base_size = 16)
+
+p2 <- ggplot(tips, aes_string(x = "total_bill", y = "tip", 
+                                color = "day", 
+                                fill = "day")) + 
+  geom_smooth(se=FALSE, fullrange=TRUE) + 
+  labs(title="Indirect", x= "Total Bill", y = "Tip") +
+  scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
+  theme_bw(base_size = 16)
+
+grid.arrange(p1, p2, ncol = 2)
+
+```
+
+## Clear Labels Speed Thinking
+
+```{r labelexamp}
+tips$tipPer <- tips$tip / tips$total_bill
+ggplot(tips, aes_string(x = "total_bill", y = "tip", 
+                                color = "size", 
+                                fill = "size")) + 
+  geom_point() + guides(color = "none", fill = "none") +
+  geom_abline(intercept = 0, slope = 0.15, linetype = 2) + 
+  geom_abline(intercept = 0, slope = 0.2, linetype = 2) + 
+  geom_abline(intercept = 0, slope = 0.25, linetype = 2) +
+  annotate(geom = 'text', x = 32, y = 9, label = "25% tip") +
+  annotate(geom = 'text', x = 37, y = 8, label = "20% tip") +
+  annotate(geom = 'text', x = 43, y = 7.1, label = "15% tip") +
+  labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
+  scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
+  theme_bw(base_size = 16) 
+
+```
 
 ## Layers
 
@@ -365,19 +417,23 @@ A layer consists of:
   4. and additional parameters to control the scales, labels, and guides. 
 
 
-## Assembling a Graphic {.columns-2}
+## Pre-writing Your Visualization
 
-- SCALE: Y (0 - 10), label dollar, data = Tip
-- SCALE: X (0 - 50), label dollar, data = Total Bill
-- SCALE: Color (Teal = Dinner, Orange = Lunch), data = Meal
-- GEOM: Point (x = Total Bill, y = Tip, color = MEAL)
-- GEOM: Line (x = Total Bill, y = Tip)
+- Using this "grammar" we can begin to compose plots, regardless of the 
+software we are using
+- SCALE: Y (0 - 10), LABEL: dollar, data mapping = `tip`
+- SCALE: X (0 - 50), LABEL: dollar, data mapping = `total_bill`
+- SCALE: Color (Teal = Dinner, Orange = Lunch), data mapping = `meal`
+- GUIDE: Color, discrete, position right
+- GEOM: Point, data mapping = (x = `total_bill`, y = `tip`, color = `meal`)
+- GEOM: Line linear prediction (x = `total_bill`, y = `tip`)
 
+## Production
 
-```{r plotHalf, out.width="500px",out.height="360px",echo=FALSE}
+```{r plotHalf, echo=FALSE}
 ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
   geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
-                             show.legend = FALSE) + 
+                             show.legend = FALSE, method = "lm") + 
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(x="Total Bill ($)", y="Tip ($)", 
        title="Restaurant Tipping Patterns", color = "Meal") + 
@@ -387,7 +443,8 @@ ggplot(tips, aes(x = total_bill, y = tip, color = time)) +
 
 ## Dimensionality
 
-- Using this "grammar" we can begin to compose arguments
+- Often we need to use a visualization to think about a very complex problem 
+and to invite exploration and test multiple hypotheses
 - Key to doing this is to think about the dimensionality of the data and 
 the complexity of the visualization
 - Dimensions limit how many data elements we can encode into one graphic
@@ -396,19 +453,20 @@ the complexity of the visualization
 - Sometimes we may assign the same data element to multiple dimensions for 
 emphasis
 
-## Interpretable Dimensions
-
+## Different Dimensions
 
 ```{r facet, out.width='850px'}
 library(gridExtra)
 
 p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day)) + geom_point() + 
   theme_bw() + 
-  theme(legend.position = c(.42, .85), legend.direction = "horizontal")
+  theme(legend.position = c(.42, .85), legend.direction = "horizontal") + 
+  labs(title = "Using Color")
 
 
 p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
-  facet_wrap(~day) + theme_bw() 
+  facet_wrap(~day) + theme_bw() +
+  labs(title = "Using Space")
 
 grid.arrange(p1, p2, ncol = 2)
 
@@ -420,11 +478,13 @@ grid.arrange(p1, p2, ncol = 2)
 ```{r facetgrid, out.width='850px'}
 p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day, shape = time)) +
   geom_point() + theme_bw() + theme(legend.position = c(.41, .85), 
-                                    legend.direction = "horizontal")
+                                    legend.direction = "horizontal") + 
+  labs(title = "Using Color")
 
 p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
   facet_grid(day~time) + theme_bw() + 
-  geom_smooth(method = 'lm', se = FALSE, linetype = 2)
+  geom_smooth(method = 'lm', se = FALSE, linetype = 2)+ 
+  labs(title = "Using Space")
 grid.arrange(p1, p2, ncol = 2)
 ```
 
