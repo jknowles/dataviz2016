@@ -79,7 +79,7 @@ always be <span class = 'red'>better than a table.</span></q></p>
 
 ```{r}
 ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
-  geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
+  geom_point(size = 3) + geom_smooth(aes(group = 1), se = FALSE, 
                              show.legend = FALSE) + 
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(x="Total Bill ($)", y="Tip ($)", 
@@ -140,7 +140,7 @@ ui = fluidPage(
   server = function(input, output){
     output$aesPlot <- renderPlot({
   ggplot(tips, aes_string(x = input$x, y = input$y, color = input$color)) + 
-  geom_point() +
+  geom_point(size = 3) +
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(title="Restaurant Tipping Patterns") + 
   theme_bw(base_size = 16)}, width=600 , height=500)
@@ -198,7 +198,7 @@ shinyApp(
   })
   output$geomPlot <- renderPlot({
  if(input$geom == "point"){
-   p1() + geom_point()
+   p1() + geom_point(size = 3)
  } else if(input$geom == "text"){
    p1() + geom_text(aes_string(label = input$color))
  } else if(input$geom == "bar"){
@@ -256,7 +256,7 @@ shinyApp(
      ggplot(tips, aes_string(x = input$x, y = input$y, 
                                color = "size", 
                                fill = "size")) + 
-  geom_point() + guides(color = "none", fill = "none") +
+  geom_point(size = 3) + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns") + 
   theme_bw(base_size = 16)
   })
@@ -312,7 +312,7 @@ shinyApp(
      ggplot(tips, aes_string(x = "total_bill", y = "tip", 
                                 color = "size", 
                                 fill = "size")) + 
-  geom_point() + guides(color = "none", fill = "none") +
+  geom_point(size = 3) + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
   scale_y_continuous(label = dollar) + scale_x_continuous(label = dollar) +
   theme_bw(base_size = 16)
@@ -339,7 +339,7 @@ shinyApp(
    ggplot(tips, aes_string(x = "total_bill", y = "tipPer", 
                                 color = "size", 
                                 fill = "size")) + 
-  geom_point() + guides(color = "none", fill = "none") +
+  geom_point(size = 3) + guides(color = "none", fill = "none") +
   labs(title="Restaurant Tipping Patterns", x= "Total Bill", y = "Tip") +
   scale_y_continuous(label = percent) + scale_x_continuous(label = dollar) +
   theme_bw(base_size = 16)
@@ -397,7 +397,7 @@ tips$tipPer <- tips$tip / tips$total_bill
 ggplot(tips, aes_string(x = "total_bill", y = "tip", 
                                 color = "size", 
                                 fill = "size")) + 
-  geom_point() + guides(color = "none", fill = "none") +
+  geom_point(size = 3) + guides(color = "none", fill = "none") +
   geom_abline(intercept = 0, slope = 0.15, linetype = 2) + 
   geom_abline(intercept = 0, slope = 0.2, linetype = 2) + 
   geom_abline(intercept = 0, slope = 0.25, linetype = 2) +
@@ -437,7 +437,7 @@ software we are using
 
 ```{r plotHalf, echo=FALSE}
 ggplot(tips, aes(x = total_bill, y = tip, color = time)) + 
-  geom_point() + geom_smooth(aes(group = 1), se = FALSE, 
+  geom_point(size = 3) + geom_smooth(aes(group = 1), se = FALSE, 
                              show.legend = FALSE, method = "lm") + 
   scale_color_brewer(type = "qual", palette = 2) + 
   labs(x="Total Bill ($)", y="Tip ($)", 
@@ -466,12 +466,12 @@ emphasis, restricting our available aesthetics
 
 ```{r facet, out.width='850px'}
 library(gridExtra)
-p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day)) + geom_point() + 
+p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day)) + geom_point(size = 3) + 
   theme_bw() + 
   theme(legend.position = c(.42, .85), legend.direction = "horizontal") + 
   labs(title = "Using Color")
 
-p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
+p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point(size = 3) + 
   facet_wrap(~day) + theme_bw() +
   labs(title = "Using Space")
 
@@ -483,11 +483,11 @@ grid.arrange(p1, p2, ncol = 2)
 
 ```{r facetgrid, out.width='850px'}
 p1 <- ggplot(tips, aes(y = tip, x = total_bill, color = day, shape = time)) +
-  geom_point() + theme_bw() + theme(legend.position = c(.41, .85), 
+  geom_point(size = 3) + theme_bw() + theme(legend.position = c(.41, .85), 
                                     legend.direction = "horizontal") + 
   labs(title = "Using Color")
 
-p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point() + 
+p2 <- ggplot(tips, aes(y = tip, x = total_bill)) + geom_point(size = 3) + 
   facet_grid(day~time) + theme_bw() + 
   geom_smooth(method = 'lm', se = FALSE, linetype = 2)+ 
   labs(title = "Using Space")
@@ -697,7 +697,7 @@ plotdf$outlier <- c(rep("No", 100), rep("Yes", 3))
 
 
 ggplot(plotdf, aes(x = x1, y = y, color = outlier, shape = outlier)) + 
-  geom_point() +  
+  geom_point(size = 3) +  
   theme_bw(base_size = 14) + scale_color_brewer(type = "qual", palette = 6) + 
   geom_smooth(aes(group = 1)) + 
   guides(color = "none", shape = guide_legend("Detected?")) + 
@@ -732,7 +732,7 @@ shinyApp(
   server = function(input, output){
   output$colorPlot <- renderPlot({
    ggplot(tips, aes(x = total_bill, y = tip, color = day)) +
-   geom_point() + geom_smooth(method = "lm", se = FALSE, linetype = 2) +
+   geom_point(size=4) + geom_smooth(method = "lm", se = FALSE, linetype = 2) +
    labs(title="Restaurant Tipping Patterns") +
    theme_bw(base_size = 16) + labs(x = "Total Bill", y = "Tip") + 
        scale_x_continuous(label = dollar) + scale_y_continuous(label = dollar) + 
@@ -832,27 +832,6 @@ The technology you choose to do visualizations is largely a question of personal
   - Adobe Illustrator is great for publication quality graphics, 
   - R is a great tool for rapidly prototyping different visualizations
 - Chose a technology that best serves your **consumer**, not you the producer. 
-
-
-## Some Opinions on Technologies
-
-```{r technologies,echo=FALSE}
-techs<-c("Adobe", "R", "Stata/SPSS", "D3", "Tableau", "JavaScript", 
-         "Processing", "Excel", "SAS")
-speed  <- c(1.5, 7, 5, 6, 9, 4, 5, 9, 4)
-quality <- c(10, 9, 5, 9, 8, 8, 9, 2, 4)
-web <- c("Yes", "Yes", "No", "Yes", "No", "Yes", "Yes", "No", "No")
-viz <- data.frame(techs=techs, speed=speed, quality=quality, web=web)
-
-qplot(speed, quality, data=viz, geom="point", color=factor(web), size = I(4)) + 
-  coord_cartesian(x = c(0,11), y = c(0,11)) + theme_bw() +
-  geom_text(aes(label = techs), color="black", vjust=1.4, hjust=1, size = I(4)) +
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), 
-        legend.position = c(0.185, 0.1), legend.direction ="horizontal") +
-  labs(color="Web Ready") + 
-  scale_color_few() +
-  labs(x = "Speed", y = "Quality") 
-```
 
 
 ## References
